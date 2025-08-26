@@ -43,7 +43,10 @@ func (a *App) SetupMiddleware() {
 
 func (a *App) SetupRouters() {
 
-	a.Fiber.Get("/", a.Handler.HelloHandler)
+	a.Fiber.Post("/todo", a.Handler.CreatTodo)
+	a.Fiber.Patch("/todo/:id", a.Handler.UpdateTodo)
+	a.Fiber.Delete("/todo/:id", a.Handler.DeleteTodo)
+	a.Fiber.Get("/todo", a.Handler.GetAllTodo)
 
 }
 
