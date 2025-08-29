@@ -1,19 +1,19 @@
 package handlers
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
+	
 	"github.com/vadimysta/golang-react-todo/backend/internal/model"
+	"github.com/vadimysta/golang-react-todo/backend/internal/storage/mongodb"
 )
 
 type Handler struct {
-	todos []model.Todo
+	todos mongodb.TodoRepository
 }
 
-func New() *Handler {
+func New(todos mongodb.TodoRepository) *Handler {
 	return &Handler{
-		todos: []model.Todo{},
+		todos: todos,
 	}
 }
 
@@ -29,10 +29,11 @@ func (h *Handler) CreatTodo(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "Todo body cannot be empty"})
 	}
 
-	todo.ID = len(h.todos) + 1 
-	todo.Completed = false
+	if err := h.todos.Create(c.Context(), &todo); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to creat task"})
+	}
 
-	h.todos = append(h.todos, todo)
+	todo.Completed = false
 
 	return c.Status(201).JSON(todo)
 
@@ -41,41 +42,49 @@ func (h *Handler) CreatTodo(c *fiber.Ctx) error {
 func (h *Handler) UpdateTodo(c *fiber.Ctx) error {
 
 	id := c.Params("id")
-
-	for i, v := range h.todos {
-
-		if fmt.Sprint(v.ID) == id {
-			h.todos[i].Completed = true
-
-			return c.Status(200).JSON(h.todos[i])
-		
-		}
+	if id == "" {
+		c.Status(400).JSON(fiber.Map{"error": "id not found"})
 	}
 
-	return c.Status(404).JSON(fiber.Map{"error": "task not found"})
+	var request struct {
+		Completed bool `json:"completed"`
+	}
+
+	if err := c.BodyParser(&request); err != nil {
+		c.Status(400).JSON(fiber.Map{"error": "invalid JSON"})
+	}
+
+	if err := h.todos.Update(c.Context(), id, request.Completed); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to update task"})
+	}
+	
+
+	return c.Status(200).JSON(fiber.Map{"message": "task update"})
 
 }
 
 func (h *Handler) DeleteTodo(c *fiber.Ctx) error {
 
 	id := c.Params("id")
+	if id == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "id not found"})
+	}
 
-	for i, v := range h.todos {
+	if err := h.todos.Delete(c.Context(), id); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to delete task"})
+	}
 
-		if fmt.Sprint(v.ID) == id {
-			h.todos = append(h.todos[:i], h.todos[i+1:]...)
-
-			return c.Status(200).JSON(fiber.Map{"success": true})
-
-		}
-	} 
-
-	return c.Status(404).JSON(fiber.Map{"error": "failed delete to task"})
-
+	return c.Status(200).JSON(fiber.Map{"message": "task delete"})
+	
 }
 
 func (h *Handler) GetAllTodo(c *fiber.Ctx) error {
 	
-	return c.JSON(h.todos)
+	todos, err := h.todos.GetAll(c.Context())
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to get task"})
+	}
+
+	return c.Status(201).JSON(todos)
 
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/vadimysta/golang-react-todo/backend/internal/config"
 	handlers "github.com/vadimysta/golang-react-todo/backend/internal/handler"
+	"github.com/vadimysta/golang-react-todo/backend/internal/storage/mongodb"
 )
 
 type App struct {
@@ -17,13 +18,15 @@ type App struct {
 	Handler *handlers.Handler
 }
 
-func New(config *config.Config, log *slog.Logger) *App {
+func New(config *config.Config, log *slog.Logger, repo *mongodb.TodoRepository) *App {
+
+	// repo := 
 
 	app := App{
 		Fiber:  fiber.New(),
 		Config: config,
 		Logger: log,
-		Handler: handlers.New(),
+		Handler: handlers.New(*repo),
 	}
 
 	app.SetupMiddleware()

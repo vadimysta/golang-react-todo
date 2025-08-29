@@ -1,7 +1,9 @@
 package model
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type Todo struct {
-	ID int `json:"id"`
-	Completed bool `json:"completed"`
-	Body string `json:"body"`
+	ID primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Completed bool `json:"completed" bson:"completed"`
+	Body string `json:"body" bson:"body"`
 }
