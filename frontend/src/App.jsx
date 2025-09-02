@@ -77,7 +77,7 @@ function App() {
       if (!response.ok) throw new Error('Помилка оновлення')
       
       setTodos(prev => prev.map(todo =>
-        todo.id === id ? { ...todo, completed: !currentCompleted } : todo // ← ИСПРАВЛЕНО: todo.id
+        todo.id === id ? { ...todo, completed: !currentCompleted } : todo
       ))
     } catch (error) {
       console.error('Помилка оновлення:', error)
@@ -171,7 +171,7 @@ function App() {
           <div className="todo-list">
             {filteredTodos.length > 0 ? (
               filteredTodos.map(todo => (
-                <div key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}> {/* ← ИСПРАВЛЕНО: todo.id */}
+                <div key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
                   <label className="checkbox-label">
                     <input
                       type="checkbox"
