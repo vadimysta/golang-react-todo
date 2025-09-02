@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	
+
 	"github.com/vadimysta/golang-react-todo/backend/internal/model"
 	"github.com/vadimysta/golang-react-todo/backend/internal/storage/mongodb"
 )

@@ -4,6 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
 
 	"github.com/vadimysta/golang-react-todo/backend/internal/config"
@@ -29,6 +30,8 @@ func New(config *config.Config, log *slog.Logger, repo *mongodb.TodoRepository) 
 		Handler: handlers.New(*repo),
 	}
 
+	app.SetupCORS()
+
 	app.SetupMiddleware()
 
 	app.SetupRouters()
@@ -41,6 +44,16 @@ func New(config *config.Config, log *slog.Logger, repo *mongodb.TodoRepository) 
 func (a *App) SetupMiddleware() {
 
 	a.Fiber.Use(fiberLogger.New())
+
+}
+
+func (a *App) SetupCORS() {
+
+	a.Fiber.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost:5173",
+		AllowMethods: "GET, POST, PATCH, DELETE",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
 }
 

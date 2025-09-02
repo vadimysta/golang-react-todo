@@ -81,6 +81,11 @@ body {
   border-color: #667eea;
 }
 
+.todo-input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .add-btn {
   padding: 15px 20px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -92,8 +97,13 @@ body {
   transition: transform 0.2s;
 }
 
-.add-btn:hover {
+.add-btn:hover:not(:disabled) {
   transform: translateY(-2px);
+}
+
+.add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .filters {
@@ -116,6 +126,11 @@ body {
   background: #667eea;
   color: white;
   border-color: #667eea;
+}
+
+.filter-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .todo-list {
@@ -175,6 +190,11 @@ body {
   font-size: 14px;
 }
 
+.checkbox:disabled + .checkmark {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .todo-text {
   flex: 1;
   font-size: 16px;
@@ -194,32 +214,35 @@ body {
   transition: opacity 0.3s;
 }
 
-.delete-btn:hover {
+.delete-btn:hover:not(:disabled) {
   opacity: 1;
 }
 
+.delete-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 .stats {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
   color: #6c757d;
   font-size: 14px;
   padding-top: 20px;
   border-top: 1px solid #e0e0e0;
 }
 
-.app {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center; 
-  align-items: center; 
+.loading {
+  text-align: center;
   padding: 20px;
+  color: #666;
+  font-style: italic;
 }
 
-.container {
-  background: white;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto; 
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 18px;
+  font-style: italic;
 }
